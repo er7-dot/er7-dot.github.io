@@ -13,12 +13,12 @@
 <meta property="og:site_name" content="--jaewdoy--">
 <meta property="og:description" content="OLLVM混淆技术与反混淆实战：从环境搭建到控制流还原 | CN-SEC 中文网 补充说明： OLLVM介绍目的针对LLVM的代码混淆工具，旨在加强逆向的难度 LLVM介绍架构 前端（Frontend）负责解析源代码，进行语法 &#x2F; 语义分析，最终生成 LLVM IR。例如：Clang（LLVM 的 C&#x2F;C++ 前端）将 C 代码转换为 IR；rustc（Rust 编译器）也会生">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="c:\Users\%E4%BA%8C%E3%80%81%E3%80%81%E3%80%81%E3%80%81\AppData\Roaming\Typora\typora-user-images\image-20251015223813279.png">
+<meta property="og:image" content="http://example.com/images/image-20251015223813279.png">
 <meta property="article:published_time" content="2025-10-16T08:33:51.000Z">
-<meta property="article:modified_time" content="2025-10-16T08:41:12.238Z">
+<meta property="article:modified_time" content="2025-10-16T15:11:30.037Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="c:\Users\%E4%BA%8C%E3%80%81%E3%80%81%E3%80%81%E3%80%81\AppData\Roaming\Typora\typora-user-images\image-20251015223813279.png">
+<meta name="twitter:image" content="http://example.com/images/image-20251015223813279.png">
   
     <link rel="alternate" href="/atom.xml" title="--jaewdoy--" type="application/atom+xml">
   
@@ -112,7 +112,7 @@
 </ul>
 <h3 id="虚假-混淆控制流（Bogus-Control-Flow）"><a href="#虚假-混淆控制流（Bogus-Control-Flow）" class="headerlink" title="虚假&#x2F;混淆控制流（Bogus Control Flow）"></a>虚假&#x2F;混淆控制流（Bogus Control Flow）</h3><p>指令前设置一个永真&#x2F;永假条件，执行判断语句后再执行指令。</p>
 <p>标准流程图如下：</p>
-<p><img src="C:\Users\二、、、、\AppData\Roaming\Typora\typora-user-images\image-20251015223813279.png" alt="image-20251015223813279"></p>
+<p><img src="/../images/image-20251015223813279.png" alt="image-20251015223813279"></p>
 <h4 id="反混淆："><a href="#反混淆：" class="headerlink" title="反混淆："></a>反混淆：</h4><p>将对x,y赋值的地方，使用idapython进行统一的nop。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#去除bcf混淆import ida_xref   #交叉引用操作import ida_idaapiimport ida_bytesimport ida_segmentdef do_patch(ea):if(ida_bytes.get_bytes(ea,1)==b&quot;x8B&quot;):    reg=(ord(ida_bytes.get_bytes(ea+1,1)) &amp; 0b00111000)&gt;&gt;3    ida_bytes.patch_bytes(ea,(0xB8+reg).to_bytes(1,&quot;little&quot;)+b&quot;x00x00x00x00x90x90&quot;)  #patch_bytes(ea, buf)else:print(&quot;error&quot;)seg=ida_segment.get_segm_by_name(&quot;.bss&quot;)start=seg.start_eaend=seg.end_eafor addr in range(start,end,4):  ref=ida_xref.get_first_dref_to(addr)print(hex(ref).center(20,&#x27;-&#x27;))#获取所有的交叉引用while (ref!=ida_idaapi.BADADDR):#BADADDR如果不是无效地址    do_patch(ref)print(&quot;patch at&quot;+hex(ref))&#x27;&#x27;&#x27;    ida_idaapi.ea_t get_next_dref_to ( ida_idaapi.ea_t to,    ida_idaapi.ea_t current )    &#x27;&#x27;&#x27;    ref=ida_xref.get_next_dref_to(addr,ref)print(&quot;-&quot;*20)print(&quot;BCF 去除 finish&quot;)</span><br></pre></td></tr></table></figure>
 
@@ -123,7 +123,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2025/10/16/OLLVM%E6%B7%B7%E6%B7%86%E4%B8%8E%E5%8F%8D%E6%B7%B7%E6%B7%86/" data-id="cmgtaky9b0000wkgcc1o53al2" data-title="OLLVM混淆与反混淆" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2025/10/16/OLLVM%E6%B7%B7%E6%B7%86%E4%B8%8E%E5%8F%8D%E6%B7%B7%E6%B7%86/" data-id="cmgtk5wpb0001t4gcb15ccn4t" data-title="OLLVM混淆与反混淆" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -181,6 +181,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2025/10/16/Android-Java%E5%B1%82%E9%80%86%E5%90%91/">Android - Java层逆向</a>
+          </li>
         
           <li>
             <a href="/2025/10/16/angr%E5%88%86%E6%9E%90%E6%A1%86%E6%9E%B6/">angr分析框架</a>
