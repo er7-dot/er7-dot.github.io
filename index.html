@@ -105,11 +105,11 @@
 <ul>
 <li>若原始数据长度是3的倍数：</li>
 </ul>
-<h6 id="若原始数据长度是3的倍数，即8bit×3-24bit，重新划分时6bit为一组，8和6的最小公倍数是24，24bit是3字节，故三个字节为一组时无需补位。"><a href="#若原始数据长度是3的倍数，即8bit×3-24bit，重新划分时6bit为一组，8和6的最小公倍数是24，24bit是3字节，故三个字节为一组时无需补位。" class="headerlink" title="若原始数据长度是3的倍数，即8bit×3&#x3D;24bit，重新划分时6bit为一组，8和6的最小公倍数是24，24bit是3字节，故三个字节为一组时无需补位。"></a><em>若原始数据长度是3的倍数，即8bit×3&#x3D;24bit，重新划分时6bit为一组，8和6的最小公倍数是24，24bit是3字节，故三个字节为一组时无需补位。</em></h6><p><img src="D:\hexo\source\images\image-20250728092802343.png" alt="image-20250728092802343"></p>
+<h6 id="若原始数据长度是3的倍数，即8bit×3-24bit，重新划分时6bit为一组，8和6的最小公倍数是24，24bit是3字节，故三个字节为一组时无需补位。"><a href="#若原始数据长度是3的倍数，即8bit×3-24bit，重新划分时6bit为一组，8和6的最小公倍数是24，24bit是3字节，故三个字节为一组时无需补位。" class="headerlink" title="若原始数据长度是3的倍数，即8bit×3&#x3D;24bit，重新划分时6bit为一组，8和6的最小公倍数是24，24bit是3字节，故三个字节为一组时无需补位。"></a><em>若原始数据长度是3的倍数，即8bit×3&#x3D;24bit，重新划分时6bit为一组，8和6的最小公倍数是24，24bit是3字节，故三个字节为一组时无需补位。</em></h6><p><img src="/../images/image-20250728092802343.png" alt="image-20250728092802343"></p>
 <ul>
 <li>若原始数据长度不是3的倍数：</li>
 </ul>
-<p><img src="D:\hexo\source\images\image-20250728094644134.png" alt="image-20250728094644134"></p>
+<p><img src="/../images/image-20250728094644134.png" alt="image-20250728094644134"></p>
 <p>三个一组，空位补0，所以base64编码后有**&#x3D;**。</p>
 <h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>3个字节经过编码后，变成4个字节。<strong>编码后字串长度÷3×4</strong>。</p>
 <h5 id="特征："><a href="#特征：" class="headerlink" title="特征："></a>特征：</h5><ul>
@@ -134,15 +134,15 @@
 <h4 id="编码步骤-2"><a href="#编码步骤-2" class="headerlink" title="编码步骤"></a>编码步骤</h4><p>将二进制数据5个一组，之后再根据base32索引表，进行编码。如果结尾不满足5的倍数，就用“&#x3D;”填充，</p>
 <h4 id="原因-1"><a href="#原因-1" class="headerlink" title="原因"></a>原因</h4><p>由于5bit就可以表示2^5 &#x3D; 32个字符。所以5bit可以表示32个不同的字符。</p>
 <h2 id="RC4"><a href="#RC4" class="headerlink" title="RC4"></a>RC4</h2><h3 id="介绍-3"><a href="#介绍-3" class="headerlink" title="介绍"></a>介绍</h3><p>RC4加密是一种对称加密</p>
-<h3 id="加密-解密-原理："><a href="#加密-解密-原理：" class="headerlink" title="加密(解密)原理："></a>加密(解密)原理：</h3><p><img src="D:\hexo\source\images\image-20250729093831386.png" alt="image-20250729093831386"></p>
+<h3 id="加密-解密-原理："><a href="#加密-解密-原理：" class="headerlink" title="加密(解密)原理："></a>加密(解密)原理：</h3><p><img src="/../images/image-20250729093831386.png" alt="image-20250729093831386"></p>
 <p>密钥流和明文异或得到密文，密文和密钥流异或得到明文。</p>
 <h4 id="几个关键变量"><a href="#几个关键变量" class="headerlink" title="几个关键变量"></a>几个关键变量</h4><p>1：S-Box（S盒），密钥流生成器。一个256长度的char型数组，每个单元都是一个字节。</p>
 <p>3：密钥流keystream</p>
 <h3 id="逆向中的运用"><a href="#逆向中的运用" class="headerlink" title="逆向中的运用"></a>逆向中的运用</h3><h5 id="算法特征"><a href="#算法特征" class="headerlink" title="算法特征"></a>算法特征</h5><p>三个for循环，前两个256 for 循环为准备工作。</p>
 <p>第一个循环给s盒赋值，第二个循环根据密钥key对S盒进行交换。根据源码的了解，<strong>a2中保存的是密钥key</strong></p>
-<p><img src="D:\hexo\source\images\image-20250729115547043.png" alt="image-20250729115547043"></p>
+<p><img src="/../images/image-20250729115547043.png" alt="image-20250729115547043"></p>
 <p>第三个循环是S盒的swap，明文和S盒的异或。其中v6为S盒，a2指向明文和密文。</p>
-<p><img src="D:\hexo\source\images\image-20250729162734525.png" alt="image-20250729162734525"></p>
+<p><img src="/../images/image-20250729162734525.png" alt="image-20250729162734525"></p>
 <h5 id="魔改RC4"><a href="#魔改RC4" class="headerlink" title="魔改RC4"></a>魔改RC4</h5><p>多数赛题将rc4与其他算法进行组合来加密flag</p>
 <h6 id="常见变化位置："><a href="#常见变化位置：" class="headerlink" title="常见变化位置："></a>常见变化位置：</h6><p>密钥经过上一步的其他加密后传入</p>
 <p>s盒内部数据固定</p>
@@ -153,26 +153,26 @@
 <h4 id="逆向中的运用-1"><a href="#逆向中的运用-1" class="headerlink" title="逆向中的运用"></a>逆向中的运用</h4><h5 id="算法特征-1"><a href="#算法特征-1" class="headerlink" title="算法特征"></a>算法特征</h5><p>tea算法的主要特征表现在sum和delta变量，以及3行核心加密中出现的<strong>右移4左移5</strong>，两行各有3个小括号互相异或</p>
 <p>在题目中看到这些特征时就应该警醒这是tea相关算法</p>
 <p>delta的值一般为0x9E3779B9(-0x61C88647)，但题目中往往会改变它的值（魔改，导致部分识别加密的工具失效），但并不影响算法的逆向。</p>
-<p><img src="D:\hexo\source\images\image-20250729174920462.png" alt="image-20250729174920462"></p>
+<p><img src="/../images/image-20250729174920462.png" alt="image-20250729174920462"></p>
 <h3 id="XTEA"><a href="#XTEA" class="headerlink" title="XTEA"></a>XTEA</h3><h4 id="介绍-5"><a href="#介绍-5" class="headerlink" title="介绍"></a>介绍</h4><p>XTEA是TEA的升级版，默认进行64轮加密</p>
 <h5 id="与TEA的区别"><a href="#与TEA的区别" class="headerlink" title="与TEA的区别"></a>与TEA的区别</h5><p>之前取key的时候是固定下标取的,现在通过计算来取。</p>
 <h4 id="算法特征-2"><a href="#算法特征-2" class="headerlink" title="算法特征"></a>算法特征</h4><p>key不是按固定下标取，而是通过计算。</p>
-<p><img src="D:\hexo\source\images\image-20250730093729374.png" alt="image-20250730093729374"></p>
+<p><img src="/../images/image-20250730093729374.png" alt="image-20250730093729374"></p>
 <h3 id="XXTEA"><a href="#XXTEA" class="headerlink" title="XXTEA"></a>XXTEA</h3><h4 id="与TEA，XTEA的区别"><a href="#与TEA，XTEA的区别" class="headerlink" title="与TEA，XTEA的区别"></a>与TEA，XTEA的区别</h4><p>原字符串长度可以不是4的倍数。加密过程更复杂。</p>
 <h2 id="AES加密"><a href="#AES加密" class="headerlink" title="AES加密"></a>AES加密</h2><h3 id="介绍-6"><a href="#介绍-6" class="headerlink" title="介绍"></a>介绍</h3><p>AES即高级加密标准，为对称加密。</p>
 <blockquote>
 <p>对称加密：加密解密使用相同的密钥。</p>
 </blockquote>
-<p><img src="D:\hexo\source\images\image-20250808112418793.png" alt="image-20250808112418793"></p>
+<p><img src="/../images/image-20250808112418793.png" alt="image-20250808112418793"></p>
 <p>实际中，一般是通过RSA加密AES的密钥。</p>
 <h4 id="加密方法"><a href="#加密方法" class="headerlink" title="加密方法"></a>加密方法</h4><p>AES为分组密码，在AES标准规范中，分组长度只能是128位，也就是说，每个分组为16个字节（每个字节8位）。密钥的长度可以使用128位、192位或256位。密钥的长度不同，推荐加密轮数也不同</p>
 <blockquote>
 <p>分组密码也就是把明文分成多组，每组长度相等，每次加密一组数据，直到加密完整个明文。</p>
 </blockquote>
 <p>（下图长度单位为字节）</p>
-<p><img src="D:\hexo\source\images\image-20250808132348639.png" alt="image-20250808132348639"></p>
+<p><img src="/../images/image-20250808132348639.png" alt="image-20250808132348639"></p>
 <p>（以128位密钥为例）</p>
-<p><img src="D:\hexo\source\images\image-20250809132446555.png" alt="image-20250809132446555"></p>
+<p><img src="/../images/image-20250809132446555.png" alt="image-20250809132446555"></p>
 <p>明文被排列成4*4的矩阵，排列顺序是从上到下从左到右。根据密钥长度进行加密后输出4*4&#x3D;16个字节的密文。</p>
 <h5 id="加密"><a href="#加密" class="headerlink" title="加密"></a>加密</h5><p>AES加密过程包括以下步骤：</p>
 <ol>
@@ -196,15 +196,14 @@
 </li>
 <li><p>每一<code>512bit</code>又分为<code>16个</code>子分组，每个子分组为<code>32bit</code>的数据；<code>16</code>个子分组分别命名为 <code>M0~M15</code></p>
 </li>
-<li><p>每个子分组都要进行<code>4</code>次运算，运算公式分别为FF、GG、HH、II；总的运算次数为<code>N*16*4</code>（运算均为位运算）。</p>
+<li><p>每个子分组都要进行<code>4</code>次运算，运算公式分别为FF、GG、HH、II；总的运算次数为<code>N*16*4</code>（运算均为位<img src="/../images/4619b605fb432294e52452b1f725169b.png" alt="4619b605fb432294e52452b1f725169b"></p>
 </li>
 </ol>
-<p><img src="D:\hexo\source\images\4619b605fb432294e52452b1f725169b.png" alt="MD5分组计算"></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2025/10/15/%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95/" data-id="cmgsrlgui000160gc2y8m3rr7" data-title="&#39;加密算法&#39;" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2025/10/15/%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95/" data-id="cmgt2jsc300014wgcb8nrhazn" data-title="&#39;加密算法&#39;" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -278,7 +277,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2025/10/15/arm%E6%B1%87%E7%BC%96/" data-id="cmgsrlguf000060gcfeqy1o0f" data-title="arm汇编" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2025/10/15/arm%E6%B1%87%E7%BC%96/" data-id="cmgt2jsbz00004wgc4el55b8l" data-title="arm汇编" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
