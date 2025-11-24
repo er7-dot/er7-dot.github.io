@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Content Provider注入 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Content Provider 基础概念Content Provider是安卓四大组件之一 用来在不同应用之间共享数据。封装数据，并提供统一的URI接口供其他应用查询和修改。  安卓四大组件：    基本URI结构1content:&#x2F;&#x2F;&lt;authority&gt;&#x2F;&lt;path&gt;&#x2F;&lt;id&gt;   authority: 提供者的唯一标识，通常是包名 path: 数据表路径">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Content Provider注入">
+<meta property="og:url" content="http://example.com/2025/11/24/Content-Provider%E6%B3%A8%E5%85%A5/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Content Provider 基础概念Content Provider是安卓四大组件之一 用来在不同应用之间共享数据。封装数据，并提供统一的URI接口供其他应用查询和修改。  安卓四大组件：    基本URI结构1content:&#x2F;&#x2F;&lt;authority&gt;&#x2F;&lt;path&gt;&#x2F;&lt;id&gt;   authority: 提供者的唯一标识，通常是包名 path: 数据表路径">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2025/11/24/images/image-20251124084355887.png">
+<meta property="article:published_time" content="2025-11-24T15:29:52.000Z">
+<meta property="article:modified_time" content="2025-11-24T15:33:14.592Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2025/11/24/images/image-20251124084355887.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Content-Provider注入" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/11/24/Content-Provider%E6%B3%A8%E5%85%A5/" class="article-date">
+  <time class="dt-published" datetime="2025-11-24T15:29:52.000Z" itemprop="datePublished">2025-11-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Content Provider注入
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="Content-Provider-基础概念"><a href="#Content-Provider-基础概念" class="headerlink" title="Content Provider 基础概念"></a>Content Provider 基础概念</h2><p>Content Provider是安卓四大组件之一</p>
+<p>用来在不同应用之间共享数据。封装数据，并提供统一的URI接口供其他应用查询和修改。</p>
+<blockquote>
+<p>安卓四大组件：</p>
+</blockquote>
+<img src="../images/image-20251124084355887.png" alt="image-20251124084355887" style="zoom:50%;" />
+
+<h3 id="基本URI结构"><a href="#基本URI结构" class="headerlink" title="基本URI结构"></a>基本URI结构</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">content://&lt;authority&gt;/&lt;path&gt;/&lt;id&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>authority</strong>: 提供者的唯一标识，通常是包名</li>
+<li><strong>path</strong>: 数据表路径</li>
+<li><strong>id</strong>: 特定记录的ID</li>
+</ul>
+<h2 id="Content-Provider-的查询方法"><a href="#Content-Provider-的查询方法" class="headerlink" title="Content Provider 的查询方法"></a>Content Provider 的查询方法</h2><h3 id="query-方法参数"><a href="#query-方法参数" class="headerlink" title="query() 方法参数"></a>query() 方法参数</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Cursor <span class="title function_">query</span><span class="params">(</span></span><br><span class="line"><span class="params">    Uri uri,                    // 查询的URI</span></span><br><span class="line"><span class="params">    String[] projection,        // 要返回的列（相当于SELECT的字段）</span></span><br><span class="line"><span class="params">    String selection,          // WHERE条件</span></span><br><span class="line"><span class="params">    String[] selectionArgs,    // WHERE条件的参数值</span></span><br><span class="line"><span class="params">    String sortOrder           // ORDER BY排序</span></span><br><span class="line"><span class="params">)</span></span><br></pre></td></tr></table></figure>
+
+<p>对应SQL关系：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Content Provider调用</span></span><br><span class="line">query(uri, </span><br><span class="line">      <span class="keyword">new</span> <span class="title class_">String</span>[]&#123;<span class="string">&quot;name&quot;</span>, <span class="string">&quot;email&quot;</span>&#125;,           <span class="comment">// SELECT name, email</span></span><br><span class="line">      <span class="string">&quot;category=? AND status=?&quot;</span>,               <span class="comment">// WHERE category=? AND status=?</span></span><br><span class="line">      <span class="keyword">new</span> <span class="title class_">String</span>[]&#123;<span class="string">&quot;tech&quot;</span>, <span class="string">&quot;active&quot;</span>&#125;,          <span class="comment">// 参数值</span></span><br><span class="line">      <span class="string">&quot;name DESC&quot;</span>);                            <span class="comment">// ORDER BY name DESC</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 对应SQL</span></span><br><span class="line">SELECT name, email FROM table </span><br><span class="line">WHERE category=<span class="string">&#x27;tech&#x27;</span> AND status=<span class="string">&#x27;active&#x27;</span> </span><br><span class="line">ORDER BY name DESC</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Content-Provider-SQL注入攻击面"><a href="#Content-Provider-SQL注入攻击面" class="headerlink" title="Content Provider SQL注入攻击面"></a>Content Provider SQL注入攻击面</h2><p>Content Provider有<strong>四个主要的注入点</strong>：</p>
+<h3 id="URI路径注入"><a href="#URI路径注入" class="headerlink" title="URI路径注入"></a>URI路径注入</h3><p>正常查询：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">contentResolver.query(</span><br><span class="line">    Uri.parse(<span class="string">&quot;content://com.app.provider/users/1&quot;</span>), </span><br><span class="line">    <span class="literal">null</span>, <span class="literal">null</span>, <span class="literal">null</span>, <span class="literal">null</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>注入尝试：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">content:<span class="comment">//com.app.provider/users/1) UNION SELECT 1,2,3--         //SQL注入探测        </span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>1)</code> - 闭合原SQL中的条件括号</p>
+</li>
+<li><p><code>UNION SELECT 1,2,3</code> - 添加联合查询，<strong>探测表结构</strong>。</p>
+</li>
+<li><p><code>--</code> - SQL注释符号，注释掉原SQL中可能存在的后续代码</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">content:<span class="comment">//com.app.provider/users/1&#x27; OR 1=1--                     //恒正全返回</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Projection参数注入"><a href="#Projection参数注入" class="headerlink" title="Projection参数注入"></a>Projection参数注入</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// Projection参数直接映射到SELECT字段</span><br><span class="line">String[] projection = &#123;</span><br><span class="line">    &quot;* FROM sqlite_master --&quot;,           // 注入到这里</span><br><span class="line">    &quot;name&quot;, </span><br><span class="line">    &quot;password&quot;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">cursor = contentResolver.query(uri, projection, null, null, null);</span><br><span class="line">// 实际执行：SELECT * FROM sqlite_master --, name, password FROM ...</span><br></pre></td></tr></table></figure>
+
+<p>可以直接获取：</p>
+<ul>
+<li>所有表名和结构</li>
+<li>索引信息</li>
+<li>视图定义</li>
+<li>触发器设置</li>
+</ul>
+<h4 id="防御方法"><a href="#防御方法" class="headerlink" title="防御方法"></a>防御方法</h4><h5 id="方案1：白名单验证"><a href="#方案1：白名单验证" class="headerlink" title="方案1：白名单验证"></a>方案1：白名单验证</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> String[] validateProjection(String[] projection) &#123;</span><br><span class="line">    <span class="keyword">if</span> (projection == <span class="literal">null</span>) <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义允许的字段白名单</span></span><br><span class="line">Set&lt;String&gt; allowedColumns = <span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;&gt;();</span><br><span class="line">allowedColumns.add(<span class="string">&quot;_id&quot;</span>);</span><br><span class="line">allowedColumns.add(<span class="string">&quot;name&quot;</span>); </span><br><span class="line">allowedColumns.add(<span class="string">&quot;email&quot;</span>);</span><br><span class="line">allowedColumns.add(<span class="string">&quot;phone&quot;</span>);</span><br><span class="line"></span><br><span class="line">List&lt;String&gt; validProjection = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line"><span class="keyword">for</span> (String column : projection) &#123;</span><br><span class="line">    <span class="keyword">if</span> (allowedColumns.contains(column)) &#123;</span><br><span class="line">        validProjection.add(column);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">SecurityException</span>(<span class="string">&quot;Invalid projection column: &quot;</span> + column);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> validProjection.toArray(<span class="keyword">new</span> <span class="title class_">String</span>[<span class="number">0</span>]);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="方案2：框架级别的安全防护"><a href="#方案2：框架级别的安全防护" class="headerlink" title="方案2：框架级别的安全防护"></a>方案2：框架级别的安全防护</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Cursor <span class="title function_">query</span><span class="params">(Uri uri, String[] projection, </span></span><br><span class="line"><span class="params">                   String selection, String[] selectionArgs, </span></span><br><span class="line"><span class="params">                   String sortOrder)</span> &#123;</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line"><span class="type">SQLiteQueryBuilder</span> <span class="variable">qb</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SQLiteQueryBuilder</span>();</span><br><span class="line">qb.setTables(<span class="string">&quot;users&quot;</span>);                                <span class="comment">// 固定表名，防止表名注入</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 安全：框架会自动验证和转义</span></span><br><span class="line"><span class="keyword">return</span> qb.query(db, projection, selection, selectionArgs, </span><br><span class="line">               <span class="literal">null</span>, <span class="literal">null</span>, sortOrder);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="方案3：手动转义"><a href="#方案3：手动转义" class="headerlink" title="方案3：手动转义"></a>方案3：手动转义</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> String <span class="title function_">buildSafeProjection</span><span class="params">(String[] projection)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (projection == <span class="literal">null</span>) <span class="keyword">return</span> <span class="string">&quot;*&quot;</span>;</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line"><span class="type">StringBuilder</span> <span class="variable">sb</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StringBuilder</span>();</span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; projection.length; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (i &gt; <span class="number">0</span>) sb.append(<span class="string">&quot;, &quot;</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 验证字段名格式（只允许字母数字下划线）</span></span><br><span class="line">    <span class="keyword">if</span> (!projection[i].matches(<span class="string">&quot;[a-zA-Z_][a-zA-Z0-9_]*&quot;</span>)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>(<span class="string">&quot;Invalid column name&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    sb.append(projection[i]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> sb.toString();</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Selection参数注入"><a href="#Selection参数注入" class="headerlink" title="Selection参数注入"></a>Selection参数注入</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// Selection参数映射到WHERE条件</span><br><span class="line">String selection = &quot;1=1) UNION SELECT * FROM users --&quot;;</span><br><span class="line"></span><br><span class="line">cursor = contentResolver.query(uri, null, selection, null, null);</span><br><span class="line">// 实际执行：SELECT * FROM table WHERE 1=1) UNION SELECT * FROM users --</span><br></pre></td></tr></table></figure>
+
+<p>可获取users表的所有消息</p>
+<h3 id="SortOrder参数注入"><a href="#SortOrder参数注入" class="headerlink" title="SortOrder参数注入"></a>SortOrder参数注入</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// SortOrder参数映射到ORDER BY</span><br><span class="line">String sortOrder = &quot;1 LIMIT 1 UNION SELECT * FROM secret_table --&quot;;</span><br><span class="line"></span><br><span class="line">cursor = contentResolver.query(uri, null, null, null, sortOrder);</span><br><span class="line">// 实际执行：SELECT * FROM table ORDER BY 1 LIMIT 1 UNION SELECT * FROM secret_table --</span><br></pre></td></tr></table></figure>
+
+<p>可获取秘密表的所有数据</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/11/24/Content-Provider%E6%B3%A8%E5%85%A5/" data-id="cmidb69vg000384gccuysa7i9" data-title="Content Provider注入" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2025/11/06/KGB-Messenger%20%E2%80%94%E2%80%94%20APK%E7%BB%93%E6%9E%84%E5%88%86%E6%9E%90%EF%BC%8CFrida%E5%9F%BA%E7%A1%80/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">KGB Messenger -- APK结构分析 ，Frida基础</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/11/">November 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/10/">October 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2025/11/24/Content-Provider%E6%B3%A8%E5%85%A5/">Content Provider注入</a>
+          </li>
+        
+          <li>
+            <a href="/2025/11/06/KGB-Messenger%20%E2%80%94%E2%80%94%20APK%E7%BB%93%E6%9E%84%E5%88%86%E6%9E%90%EF%BC%8CFrida%E5%9F%BA%E7%A1%80/">KGB Messenger -- APK结构分析 ，Frida基础</a>
+          </li>
+        
+          <li>
+            <a href="/2025/10/16/Android-Java%E5%B1%82%E9%80%86%E5%90%91/">Android - Java层逆向</a>
+          </li>
+        
+          <li>
+            <a href="/2025/10/16/angr%E5%88%86%E6%9E%90%E6%A1%86%E6%9E%B6/">angr分析框架</a>
+          </li>
+        
+          <li>
+            <a href="/2025/10/16/OLLVM%E6%B7%B7%E6%B7%86%E4%B8%8E%E5%8F%8D%E6%B7%B7%E6%B7%86/">OLLVM混淆与反混淆</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
