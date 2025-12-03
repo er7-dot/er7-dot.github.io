@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>allsafe 第一部分（实战） | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="github网址：https:&#x2F;&#x2F;github.com&#x2F;t0thkr1s&#x2F;allsafe Insecure Logging题目描述：Simple information disclosure vulnerability. Use the logcat command-line tool to discover sensitive information.   使用logcat查看应用程序记录的所谓">
+<meta property="og:type" content="article">
+<meta property="og:title" content="allsafe 第一部分（实战）">
+<meta property="og:url" content="http://example.com/2025/12/03/allsafe-%E5%AE%9E%E6%88%98-wp1/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="github网址：https:&#x2F;&#x2F;github.com&#x2F;t0thkr1s&#x2F;allsafe Insecure Logging题目描述：Simple information disclosure vulnerability. Use the logcat command-line tool to discover sensitive information.   使用logcat查看应用程序记录的所谓">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/image-20251114192415357.png">
+<meta property="og:image" content="http://example.com/images/image-20251114193034563.png">
+<meta property="og:image" content="http://example.com/images/image-20251115120306359.png">
+<meta property="og:image" content="http://example.com/images/image-20251115121255029.png">
+<meta property="og:image" content="http://example.com/images/image-20251115121512697.png">
+<meta property="og:image" content="http://example.com/images/image-20251118093038880.png">
+<meta property="og:image" content="http://example.com/images/image-20251117213651152.png">
+<meta property="og:image" content="http://example.com/images/image-20251117221446499.png">
+<meta property="og:image" content="http://example.com/images/image-20251119194611606.png">
+<meta property="og:image" content="http://example.com/images/image-20251119195405935.png">
+<meta property="og:image" content="http://example.com/images/image-20251119195645500.png">
+<meta property="og:image" content="http://example.com/images/image-20251119195807938.png">
+<meta property="og:image" content="http://example.com/images/image-20251119200208779.png">
+<meta property="og:image" content="http://example.com/images/29.jpg">
+<meta property="article:published_time" content="2025-12-03T07:43:18.000Z">
+<meta property="article:modified_time" content="2025-12-03T07:57:30.674Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/image-20251114192415357.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-allsafe-实战-wp1" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/12/03/allsafe-%E5%AE%9E%E6%88%98-wp1/" class="article-date">
+  <time class="dt-published" datetime="2025-12-03T07:43:18.000Z" itemprop="datePublished">2025-12-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      allsafe 第一部分（实战）
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>github网址：<a target="_blank" rel="noopener" href="https://github.com/t0thkr1s/allsafe">https://github.com/t0thkr1s/allsafe</a></p>
+<h4 id="Insecure-Logging"><a href="#Insecure-Logging" class="headerlink" title="Insecure Logging"></a>Insecure Logging</h4><p>题目描述：Simple information disclosure vulnerability. Use the <code>logcat</code> command-line tool to discover sensitive information.</p>
+<p><img src="/../images/image-20251114192415357.png" alt="image-20251114192415357"></p>
+<p><img src="/../images/image-20251114193034563.png" alt="image-20251114193034563"></p>
+<p>使用logcat查看应用程序记录的所谓秘密&#x2F;敏感数据</p>
+<h4 id="Hardcoded-Credentials"><a href="#Hardcoded-Credentials" class="headerlink" title="Hardcoded Credentials"></a>Hardcoded Credentials</h4><p>题目描述：Some credentials are left in the code. Your task is to reverse engineer the app and find sensitive information.</p>
+<p>点进题目一直显示under development，反编译字符串定位查看HardcodedCredentials类</p>
+<p><img src="/../images/image-20251115120306359.png" alt="image-20251115120306359"></p>
+<p>上面有个BODY字段，里面有硬编码的账号密码</p>
+<p><img src="/../images/image-20251115121255029.png" alt="image-20251115121255029"></p>
+<p><img src="/../images/image-20251115121512697.png" alt="image-20251115121512697"></p>
+<p>则答案为 superadmin:supersecurepassword</p>
+<h4 id="SQL-Injection"><a href="#SQL-Injection" class="headerlink" title="SQL Injection"></a>SQL Injection</h4><blockquote>
+<p>关于SQL注入的知识点：<a target="_blank" rel="noopener" href="https://er7-dot.github.io/2025/11/24/Content-Provider%E6%B3%A8%E5%85%A5/">Content Provider注入 | Hexo</a></p>
+</blockquote>
+<p>题目描述：This task can be easily completed without reverse engineering the app. The goal is to bypass the following login page by exploiting a simple SQL injection vulnerability.</p>
+<p>Username框SQL注入</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span><span class="string">&#x27; or 1=1 --</span></span><br></pre></td></tr></table></figure>
+
+<p>点击登录，会自动显示密码</p>
+<p><img src="/../images/image-20251118093038880.png" alt="image-20251118093038880"></p>
+<h4 id="Firebase-Database"><a href="#Firebase-Database" class="headerlink" title="Firebase Database"></a>Firebase Database</h4><p>题目描述：In this task, the application is getting data from a realtime database. It’s all nice and good but I have a feeling the developers didn’t set the correct rules for production.</p>
+<p>直接查看资源文件，找到了firebase数据库</p>
+<p><img src="/../images/image-20251117213651152.png" alt="image-20251117213651152"></p>
+<p>访问url得到flag和secret。（以<code>.json</code>格式接收数据是 Firebase REST API 的强制要求）</p>
+<p><img src="/../images/image-20251117221446499.png" alt="image-20251117221446499"></p>
+<h4 id="Deep-Link-Exploitation"><a href="#Deep-Link-Exploitation" class="headerlink" title="Deep Link Exploitation"></a>Deep Link Exploitation</h4><p>定位到资源文件，得到deeplink的url</p>
+<p><img src="/../images/image-20251119194611606.png" alt="image-20251119194611606"></p>
+<p>转到DeepLinkTask类，发现需要对比key值一致</p>
+<p><img src="/../images/image-20251119195405935.png" alt="image-20251119195405935"></p>
+<p>在string.xml中寻找储存的key值</p>
+<p><img src="/../images/image-20251119195645500.png" alt="image-20251119195645500"></p>
+<p>使用scheme uri启动activity</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb shell am start -a android.intent.action.VIEW -d &quot;allsafe://infosecadventures/congrats?key=ebfb7ff0-b2f6-41c8-bef3-4fba17be410c&quot;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/image-20251119195807938.png" alt="image-20251119195807938"></p>
+<p>手机上显示</p>
+<p><img src="/../images/image-20251119200208779.png" alt="image-20251119200208779"></p>
+<h4 id="Vulnerable-WebView"><a href="#Vulnerable-WebView" class="headerlink" title="Vulnerable WebView"></a>Vulnerable WebView</h4><blockquote>
+<p>关于WEbView的知识点<a target="_blank" rel="noopener" href="https://er7-dot.github.io/2025/11/25/WebView-%E6%A0%B8%E5%BF%83%E7%9F%A5%E8%AF%86%E4%BD%93%E7%B3%BB/">WebView 核心知识体系 | Hexo</a></p>
+</blockquote>
+<p>题目要求：</p>
+<p><img src="/../images/29.jpg" alt="29"></p>
+<p>task1需要弹出一个对话框</p>
+<p>存在xss注入</p>
+<script>alert("1337")<\script>
+
+
+输入后显示
+
+![31](../images/31.jpg)
+
+task2要进入一个本地文件夹
+
+![30](../images/30.jpg)
+
+> [!TIP]
+>
+> **`file://` 协议**：
+> `file://` 是一种 URL 协议，用于访问本地文件系统。
+> 格式为：`file://<文件路径>`
+> 例如：`file:///etc/hosts` 表示访问设备上的 `/etc/hosts` 文件
+
+
+
+#### PIN Bypass
+
+题目描述：As you can see, there's a simple PIN code validation below. Locate the method in the code and use Frida to override the return value. You can even brute-force the code because it's only 4 digit.
+
+直接搜索定位PINBypass
+
+![image-20251126152341991](../images/image-20251126152341991.png)
+
+base64解码出来
+
+![image-20251126152740158](../images/image-20251126152740158.png)
+
+得到正确的pin是4863
+
+
+
+#### Insecure Broadcast Receiver
+
+题目描述：our intern wrote a simple note tasking feature into the app but the data processing logic seems weird. Gideon got some reports about critical vulnerabilities being exploited... As far as I know, hackers were able to capture the notes and exploit a permission re-delegation vulnerability. Can you check this madness out and maybe write a PoC for demonstration?
+
+根据题目描述可知，hackers were able to capture the notes，所以xml里面的receiver是导出的receiver。(exported="true")，只要监听这个action就能拦截广播。
+
+![image-20251126221923291](../images/image-202511262219232991.png)
+
+根据action找到发送广播的组件
+
+![image-20251126232149335](../images/image-2025112623214935.png)
+
+adb发送广播，可以看到已被目的地址成功接收
+
+![image-20251201235520589](../images/image-2025120123552058.png)
+
+
+
+#### Secure Flag Bypass
+
+题目描述：My password is: Il0v3fr1d4. Can you screenshot this? The MainActivity is using the secure window flag, which prevents showing sensitive data in screenshots. It's just a fun Frida practice, there's no vulnerability here. Have fun!
+
+根据提示首先找到MainActivity。
+
+在xml里找到包含 `MAIN` action 和 `LAUNCHER` category 的 Intent 过滤器
+
+![image-20251203134450263](../images/image-20251203134450263.png)
+
+MainActivity里，通过设置flag来禁止截屏
+
+ ![image-20251203144118486](../images/image-20251203144118486.png)
+
+> 8192 是 **`WindowManager.LayoutParams.FLAG_SECURE`** 的十进制数值。
+
+frida脚本：
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//frida -U -f infosecadventures.allsafe -l hook.js </span></span><br><span class="line"><span class="title class_">Java</span>.<span class="title function_">perform</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> <span class="title class_">Window</span> = <span class="title class_">Java</span>.<span class="title function_">use</span>(<span class="string">&quot;android.view.Window&quot;</span>);</span><br><span class="line">    <span class="title class_">Window</span>.<span class="property">setFlags</span>.<span class="property">implementation</span> = <span class="keyword">function</span> (<span class="params">flags, mask</span>) &#123;</span><br><span class="line">        <span class="keyword">var</span> newFlags = flags&amp;(~<span class="number">0x2000</span>);</span><br><span class="line">        <span class="keyword">var</span> newMask = mask&amp;(~<span class="number">0x2000</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="title function_">setFlags</span>(newFlags, newMask);</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+![image-20251203152410501](../images/image-20251203152410501.png)
+
+然后就可以截图了
+
+![qq_pic_merged_1764747015856](../images/qq_pic_merged_1764747015856.jpg)
+
+
+
+#### Root Detection
+
+手机上点check root,会显示"Sorry, your device is rooted!"
+
+字符串定位，发现如果RootBeer.isRooted方法返回假就能绕开root检测
+
+![image-20251117122503398](../images/image-20251117122503398.png)
+
+hook脚本
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Java</span>.<span class="title function_">perform</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> <span class="title class_">RootBeer</span> = <span class="title class_">Java</span>.<span class="title function_">use</span>(<span class="string">&quot;com.scottyab.rootbeer.RootBeer&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="title class_">RootBeer</span>.<span class="property">isRooted</span>.<span class="property">implementation</span> = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Bypassed RootBeer.isRooted()&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+![image-20251117194208661](../images/image-20251117194208661.png)
+
+显示已经绕过了root检测，手机上显示"Congrats, root is not detected!"，完成hook。
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2025/12/03/allsafe-%E5%AE%9E%E6%88%98-wp1/" data-id="cmippsqqs0006hggc8kjc5tse" data-title="allsafe 第一部分（实战）" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2025/12/02/Android%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%AE%89%E5%85%A8%E6%BC%8F%E6%B4%9E/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Android广播机制与安全漏洞</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/12/">December 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/11/">November 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/10/">October 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2025/12/03/allsafe-%E5%AE%9E%E6%88%98-wp1/">allsafe 第一部分（实战）</a>
+          </li>
+        
+          <li>
+            <a href="/2025/12/02/Android%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%AE%89%E5%85%A8%E6%BC%8F%E6%B4%9E/">Android广播机制与安全漏洞</a>
+          </li>
+        
+          <li>
+            <a href="/2025/11/25/WebView-%E6%A0%B8%E5%BF%83%E7%9F%A5%E8%AF%86%E4%BD%93%E7%B3%BB/">WebView 核心知识体系</a>
+          </li>
+        
+          <li>
+            <a href="/2025/11/24/Content-Provider%E6%B3%A8%E5%85%A5/">Content Provider注入</a>
+          </li>
+        
+          <li>
+            <a href="/2025/11/06/KGB-Messenger%EF%BC%88%E5%AE%9E%E6%88%98%EF%BC%89/">KGB Messenger（实战）</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
