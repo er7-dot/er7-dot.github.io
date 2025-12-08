@@ -9,7 +9,7 @@
   <meta name="description" content="github网址：https:&#x2F;&#x2F;github.com&#x2F;t0thkr1s&#x2F;allsafe Insecure Logging题目描述：Simple information disclosure vulnerability. Use the logcat command-line tool to discover sensitive information.   使用logcat查看应用程序记录的所谓">
 <meta property="og:type" content="article">
 <meta property="og:title" content="allsafe 第一部分（实战）">
-<meta property="og:url" content="http://example.com/2025/12/03/allsafe-%E5%AE%9E%E6%88%98-wp1/index.html">
+<meta property="og:url" content="http://example.com/2025/12/03/allsafe-%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%EF%BC%88%E5%AE%9E%E6%88%98%EF%BC%89/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="github网址：https:&#x2F;&#x2F;github.com&#x2F;t0thkr1s&#x2F;allsafe Insecure Logging题目描述：Simple information disclosure vulnerability. Use the logcat command-line tool to discover sensitive information.   使用logcat查看应用程序记录的所谓">
 <meta property="og:locale" content="en_US">
@@ -26,9 +26,8 @@
 <meta property="og:image" content="http://example.com/images/image-20251119195645500.png">
 <meta property="og:image" content="http://example.com/images/image-20251119195807938.png">
 <meta property="og:image" content="http://example.com/images/image-20251119200208779.png">
-<meta property="og:image" content="http://example.com/images/29.jpg">
 <meta property="article:published_time" content="2025-12-03T07:43:18.000Z">
-<meta property="article:modified_time" content="2025-12-03T08:52:05.303Z">
+<meta property="article:modified_time" content="2025-12-08T13:19:31.890Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/images/image-20251114192415357.png">
@@ -88,9 +87,9 @@
 </header>
 
       <div class="outer">
-        <section id="main"><article id="post-allsafe-实战-wp1" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <section id="main"><article id="post-allsafe-第一部分（实战）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2025/12/03/allsafe-%E5%AE%9E%E6%88%98-wp1/" class="article-date">
+    <a href="/2025/12/03/allsafe-%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%EF%BC%88%E5%AE%9E%E6%88%98%EF%BC%89/" class="article-date">
   <time class="dt-published" datetime="2025-12-03T07:43:18.000Z" itemprop="datePublished">2025-12-03</time>
 </a>
     
@@ -148,114 +147,11 @@
 <p><img src="/../images/image-20251119195807938.png" alt="image-20251119195807938"></p>
 <p>手机上显示</p>
 <p><img src="/../images/image-20251119200208779.png" alt="image-20251119200208779"></p>
-<h4 id="Vulnerable-WebView"><a href="#Vulnerable-WebView" class="headerlink" title="Vulnerable WebView"></a>Vulnerable WebView</h4><blockquote>
-<p>关于WEbView的知识点<a target="_blank" rel="noopener" href="https://er7-dot.github.io/2025/11/25/WebView-%E6%A0%B8%E5%BF%83%E7%9F%A5%E8%AF%86%E4%BD%93%E7%B3%BB/">WebView 核心知识体系 | Hexo</a></p>
-</blockquote>
-<p>题目要求：</p>
-<p><img src="/../images/29.jpg" alt="29"></p>
-<p>task1需要弹出一个对话框</p>
-<p>存在xss注入</p>
-<script>alert("1337")<\script>
-
-输入后显示
-
-![31](../images/31.jpg)
-
-task2要进入一个本地文件夹
-
-![30](../images/30.jpg)
-
-> [!TIP]
->
-> **`file://` 协议**：
-> `file://` 是一种 URL 协议，用于访问本地文件系统。
-> 格式为：`file://<文件路径>`
-> 例如：`file:///etc/hosts` 表示访问设备上的 `/etc/hosts` 文件
-
-
-
-#### PIN Bypass
-
-题目描述：As you can see, there's a simple PIN code validation below. Locate the method in the code and use Frida to override the return value. You can even brute-force the code because it's only 4 digit.
-
-直接搜索定位PINBypass
-
-![image-20251126152341991](../images/image-20251126152341991.png)
-
-base64解码出来
-
-![image-20251126152740158](../images/image-20251126152740158.png)
-
-得到正确的pin是4863
-
-
-
-#### Insecure Broadcast Receiver
-
-题目描述：our intern wrote a simple note tasking feature into the app but the data processing logic seems weird. Gideon got some reports about critical vulnerabilities being exploited... As far as I know, hackers were able to capture the notes and exploit a permission re-delegation vulnerability. Can you check this madness out and maybe write a PoC for demonstration?
-
-根据题目描述可知，hackers were able to capture the notes，所以xml里面的receiver是导出的receiver。(exported="true")，只要监听这个action就能拦截广播。
-
-![image-20251126221923291](../images/image-202511262219232991.png)
-
-根据action找到发送广播的组件
-
-![image-20251126232149335](../images/image-2025112623214935.png)
-
-adb发送广播，可以看到已被目的地址成功接收
-
-![image-20251201235520589](../images/image-2025120123552058.png)
-
-
-
-#### Secure Flag Bypass
-
-题目描述：My password is: Il0v3fr1d4. Can you screenshot this? The MainActivity is using the secure window flag, which prevents showing sensitive data in screenshots. It's just a fun Frida practice, there's no vulnerability here. Have fun!
-
-根据提示首先找到MainActivity。
-
-在xml里找到包含 `MAIN` action 和 `LAUNCHER` category 的 Intent 过滤器
-
-![image-20251203134450263](../images/image-20251203134450263.png)
-
-MainActivity里，通过设置flag来禁止截屏
-
- ![image-20251203144118486](../images/image-20251203144118486.png)
-
-> 8192 是 **`WindowManager.LayoutParams.FLAG_SECURE`** 的十进制数值。
-
-frida脚本：
-
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//frida -U -f infosecadventures.allsafe -l hook.js </span></span><br><span class="line"><span class="title class_">Java</span>.<span class="title function_">perform</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> <span class="title class_">Window</span> = <span class="title class_">Java</span>.<span class="title function_">use</span>(<span class="string">&quot;android.view.Window&quot;</span>);</span><br><span class="line">    <span class="title class_">Window</span>.<span class="property">setFlags</span>.<span class="property">implementation</span> = <span class="keyword">function</span> (<span class="params">flags, mask</span>) &#123;</span><br><span class="line">        <span class="keyword">var</span> newFlags = flags&amp;(~<span class="number">0x2000</span>);</span><br><span class="line">        <span class="keyword">var</span> newMask = mask&amp;(~<span class="number">0x2000</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="title function_">setFlags</span>(newFlags, newMask);</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-![image-20251203152410501](../images/image-20251203152410501.png)
-
-然后就可以截图了
-
-![qq_pic_merged_1764747015856](../images/qq_pic_merged_1764747015856.jpg)
-
-
-
-#### Root Detection
-
-手机上点check root,会显示"Sorry, your device is rooted!"
-
-字符串定位，发现如果RootBeer.isRooted方法返回假就能绕开root检测
-
-![image-20251117122503398](../images/image-20251117122503398.png)
-
-hook脚本
-
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Java</span>.<span class="title function_">perform</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> <span class="title class_">RootBeer</span> = <span class="title class_">Java</span>.<span class="title function_">use</span>(<span class="string">&quot;com.scottyab.rootbeer.RootBeer&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="title class_">RootBeer</span>.<span class="property">isRooted</span>.<span class="property">implementation</span> = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Bypassed RootBeer.isRooted()&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-![image-20251117194208661](../images/image-20251117194208661.png)
-
-显示已经绕过了root检测，手机上显示"Congrats, root is not detected!"，完成hook。
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2025/12/03/allsafe-%E5%AE%9E%E6%88%98-wp1/" data-id="cmiprqtk0000774gcc627bhta" data-title="allsafe 第一部分（实战）" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2025/12/03/allsafe-%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%EF%BC%88%E5%AE%9E%E6%88%98%EF%BC%89/" data-id="cmix9vgyl0006rsgch4bt89wl" data-title="allsafe 第一部分（实战）" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -264,6 +160,15 @@ hook脚本
   
     
 <nav id="article-nav">
+  
+    <a href="/2025/12/08/allsafe-%E7%AC%AC%E4%BA%8C%E9%83%A8%E5%88%86%EF%BC%88%E5%AE%9E%E6%88%98%EF%BC%89/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          allsafe 第二部分（实战）
+        
+      </div>
+    </a>
   
   
     <a href="/2025/12/02/Android%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%AE%89%E5%85%A8%E6%BC%8F%E6%B4%9E/" id="article-nav-older" class="article-nav-link-wrap">
@@ -306,7 +211,11 @@ hook脚本
       <ul>
         
           <li>
-            <a href="/2025/12/03/allsafe-%E5%AE%9E%E6%88%98-wp1/">allsafe 第一部分（实战）</a>
+            <a href="/2025/12/08/allsafe-%E7%AC%AC%E4%BA%8C%E9%83%A8%E5%88%86%EF%BC%88%E5%AE%9E%E6%88%98%EF%BC%89/">allsafe 第二部分（实战）</a>
+          </li>
+        
+          <li>
+            <a href="/2025/12/03/allsafe-%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%EF%BC%88%E5%AE%9E%E6%88%98%EF%BC%89/">allsafe 第一部分（实战）</a>
           </li>
         
           <li>
@@ -319,10 +228,6 @@ hook脚本
         
           <li>
             <a href="/2025/11/24/Content-Provider%E6%B3%A8%E5%85%A5/">Content Provider注入</a>
-          </li>
-        
-          <li>
-            <a href="/2025/11/06/KGB-Messenger%EF%BC%88%E5%AE%9E%E6%88%98%EF%BC%89/">KGB Messenger（实战）</a>
           </li>
         
       </ul>
