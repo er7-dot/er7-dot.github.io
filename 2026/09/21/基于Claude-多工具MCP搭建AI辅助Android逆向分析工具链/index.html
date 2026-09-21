@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>基于Claude+多工具MCP搭建AI辅助Android逆向分析工具链 | jaewdoy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="一. 项目背景传统 Android 逆向分析通常依赖 JADX、Ghidra、Frida、ADB 等工具，分别完成 Java&#x2F;Native 代码反编译、静态分析、运行时调试与行为验证。分析过程中，研究者需要在不同工具之间反复切换，并通过大量代码搜索、定位与阅读逐步建立分析思路，整体流程较为繁琐。 本项目尝试将上述逆向分析工具通过 MCP 接入 Claude，使 Claude 作为 AI">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Claude+多工具MCP搭建AI辅助Android逆向分析工具链">
+<meta property="og:url" content="http://example.com/2026/09/21/%E5%9F%BA%E4%BA%8EClaude-%E5%A4%9A%E5%B7%A5%E5%85%B7MCP%E6%90%AD%E5%BB%BAAI%E8%BE%85%E5%8A%A9Android%E9%80%86%E5%90%91%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E9%93%BE/index.html">
+<meta property="og:site_name" content="jaewdoy">
+<meta property="og:description" content="一. 项目背景传统 Android 逆向分析通常依赖 JADX、Ghidra、Frida、ADB 等工具，分别完成 Java&#x2F;Native 代码反编译、静态分析、运行时调试与行为验证。分析过程中，研究者需要在不同工具之间反复切换，并通过大量代码搜索、定位与阅读逐步建立分析思路，整体流程较为繁琐。 本项目尝试将上述逆向分析工具通过 MCP 接入 Claude，使 Claude 作为 AI">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/image-20260915115806079.png">
+<meta property="og:image" content="http://example.com/images/image-20260915142152443.png">
+<meta property="og:image" content="http://example.com/images/image-20260915152810365.png">
+<meta property="og:image" content="http://example.com/images/image-20260915152940180.png">
+<meta property="og:image" content="http://example.com/images/image-20260916103915001.png">
+<meta property="og:image" content="http://example.com/images/image-20260916122135728.png">
+<meta property="og:image" content="http://example.com/images/image-20260916141052468.png">
+<meta property="og:image" content="http://example.com/2026/09/21/images/image-20260916144343154.png">
+<meta property="og:image" content="http://example.com/2026/09/21/images/image-20260911104652039.png">
+<meta property="og:image" content="http://example.com/2026/09/21/images/image-20260916152245037.png">
+<meta property="og:image" content="http://example.com/images/image-20260921161631464.png">
+<meta property="article:published_time" content="2026-09-21T08:32:08.000Z">
+<meta property="article:modified_time" content="2026-09-21T08:38:19.503Z">
+<meta property="article:author" content="jaewdoy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/image-20260915115806079.png">
+  
+    <link rel="alternate" href="/atom.xml" title="jaewdoy" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">jaewdoy</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">的学习博客</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-基于Claude-多工具MCP搭建AI辅助Android逆向分析工具链" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/09/21/%E5%9F%BA%E4%BA%8EClaude-%E5%A4%9A%E5%B7%A5%E5%85%B7MCP%E6%90%AD%E5%BB%BAAI%E8%BE%85%E5%8A%A9Android%E9%80%86%E5%90%91%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E9%93%BE/" class="article-date">
+  <time class="dt-published" datetime="2026-09-21T08:32:08.000Z" itemprop="datePublished">2026-09-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      基于Claude+多工具MCP搭建AI辅助Android逆向分析工具链
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="一-项目背景"><a href="#一-项目背景" class="headerlink" title="一. 项目背景"></a>一. 项目背景</h2><p>传统 Android 逆向分析通常依赖 JADX、Ghidra、Frida、ADB 等工具，分别完成 Java&#x2F;Native 代码反编译、静态分析、运行时调试与行为验证。分析过程中，研究者需要在不同工具之间反复切换，并通过大量代码搜索、定位与阅读逐步建立分析思路，整体流程较为繁琐。</p>
+<p>本项目尝试将上述逆向分析工具通过 MCP 接入 Claude，使 Claude 作为 AI Agent 参与逆向分析流程。分析者首先明确分析目标并向 Agent 提出任务，Claude 根据目标调用对应的 MCP 工具进行分析；分析者对返回结果进行验证、二次分析或进一步追问，Agent 再根据新的分析方向继续调用工具，最终形成**“分析目标 → AI 分析 → 调用工具执行 → 结果验证 → 进一步分析”**的闭环。</p>
+<p>通过将 AI 的代码理解与多种逆向工具的实际分析能力结合，减少传统逆向过程中重复性的代码搜索、定位与信息整理工作，从而提高 Android 逆向分析的效率，并探索 AI Agent 在实际逆向分析流程中的辅助能力。</p>
+<h2 id="二-整体架构及-Agent-工作流设计"><a href="#二-整体架构及-Agent-工作流设计" class="headerlink" title="二. 整体架构及 Agent 工作流设计"></a>二. 整体架构及 Agent 工作流设计</h2><h3 id="2-1-整体架构"><a href="#2-1-整体架构" class="headerlink" title="2.1 整体架构"></a>2.1 整体架构</h3><p>项目整体采用 <strong>Claude + MCP + Android 逆向工具 + Android 运行环境</strong> 的架构。</p>
+<p>其中 Claude 作为 AI Agent，负责理解分析目标、拆解分析任务、选择合适的工具并根据工具返回结果继续推进分析。</p>
+<p>MCP 作为 Claude 与外部工具之间的连接层，将不同类型的 Android 逆向工具统一接入 Agent，使 Claude 能够根据当前分析阶段调用不同工具。</p>
+<p>整体架构可以概括为：</p>
+<blockquote>
+<p><strong>分析者 → Claude → MCP → 逆向工具 → Android 环境 → 分析结果 → Claude</strong></p>
+</blockquote>
+<h3 id="2-2-多工具协同"><a href="#2-2-多工具协同" class="headerlink" title="2.2 多工具协同"></a>2.2 多工具协同</h3><p>不同逆向工具在整个分析流程中承担不同职责。</p>
+<p><strong>JADX-AI-MCP</strong></p>
+<p>主要用于 Java&#x2F;Kotlin 层分析，包括类、方法、字符串搜索以及调用关系追踪等。</p>
+<p><strong>MobSF-MCP</strong></p>
+<p>主要用于 APK 初步信息收集和安全检测，例如 Manifest、权限、组件、Exported Activity、Deep Link 以及 Native Library 等信息。</p>
+<p><strong>GhidraMCP</strong></p>
+<p>主要用于 Native 层分析。当 Java 层发现 JNI 或 Native 方法后，可以进一步定位对应 SO 文件并分析 Native 函数。</p>
+<p><strong>ADB</strong></p>
+<p>ADB 作为 Android 运行环境的底层控制工具，用于应用安装、设备通信、日志获取和运行状态验证。同时 MobSF 动态分析模块通过 docker 容器使用 ADB 与 Android Emulator 建立连接，实现动态分析环境的自动化控制。</p>
+<p><strong>Frida</strong></p>
+<p>用于动态观察程序运行行为，对静态分析得到的关键方法进行 Hook，从运行时角度验证分析结论。</p>
+<p>这些工具并不是相互独立使用，而是根据不同分析阶段进行协同。</p>
+<h2 id="三-环境与-MCP-工具链搭建"><a href="#三-环境与-MCP-工具链搭建" class="headerlink" title="三. 环境与 MCP 工具链搭建"></a>三. 环境与 MCP 工具链搭建</h2><h3 id="3-1-Claude"><a href="#3-1-Claude" class="headerlink" title="3.1 Claude"></a>3.1 Claude</h3><p>Claude 是整个系统的核心 Agent，负责接收分析目标并协调其他 MCP 工具。</p>
+<p>通过 MCP Server 将不同逆向工具暴露给 Claude 后，可以直接使用自然语言描述分析任务，而不需要在每个工具之间频繁切换。</p>
+<p>如图，claude 中已配置好三个工具，且三个工具的状态都是 running 。</p>
+<p><img src="/../images/image-20260915115806079.png" alt="image-20260915115806079"></p>
+<h3 id="3-2-JADX-AI-MCP"><a href="#3-2-JADX-AI-MCP" class="headerlink" title="3.2 JADX-AI-MCP"></a>3.2 JADX-AI-MCP</h3><p>JADX 主要负责 Android Java&#x2F;Kotlin 层代码分析。通过 JADX-AI-MCP，Claude 可以辅助完成：</p>
+<ul>
+<li>APK 代码结构分析</li>
+<li>类和方法搜索</li>
+<li>关键字符串定位</li>
+<li>方法调用关系分析</li>
+<li>Activity &#x2F; Service 等组件分析</li>
+<li>Java → Native 调用定位</li>
+</ul>
+<p><img src="/../images/image-20260915142152443.png" alt="image-20260915142152443"></p>
+<h3 id="3-3-MobSF-MCP"><a href="#3-3-MobSF-MCP" class="headerlink" title="3.3 MobSF-MCP"></a>3.3 MobSF-MCP</h3><p>MobSF 主要用于 APK 初步信息收集和安全检测。通过 MCP 接入 docker desktop 运行，可以由 Claude 根据分析需求获取 APK 的基础信息、安全配置以及潜在风险点。</p>
+<p>主要关注：</p>
+<ul>
+<li>AndroidManifest.xml</li>
+<li>权限</li>
+<li>Activities</li>
+<li>Services</li>
+<li>Broadcast Receivers</li>
+<li>Content Providers</li>
+<li>Exported Components</li>
+<li>Deep Link</li>
+<li>Native Library</li>
+<li>安全配置</li>
+</ul>
+<p>同时，MobSF 的分析结果可以作为后续 JADX、Ghidra 和动态分析的输入。</p>
+<p><img src="/../images/image-20260915152810365.png" alt="image-20260915152810365"></p>
+<p><img src="/../images/image-20260915152940180.png" alt="image-20260915152940180"></p>
+<h3 id="3-4-GhidraMCP"><a href="#3-4-GhidraMCP" class="headerlink" title="3.4 GhidraMCP"></a>3.4 GhidraMCP</h3><p>当 Java 层分析发现 Native 方法或 SO 文件参与核心逻辑时，需要进一步进入 Native 层。GhidraMCP 将 Ghidra 的 Native 分析能力提供给 Claude，主要用于：</p>
+<ul>
+<li>SO 文件分析</li>
+<li>ELF 信息分析</li>
+<li>Native 函数定位</li>
+<li>JNI 分析</li>
+<li>函数反编译</li>
+<li>交叉引用分析</li>
+</ul>
+<p>从而将 Java 层分析进一步延伸到：</p>
+<blockquote>
+<p><strong>Java → JNI → Native → SO</strong></p>
+</blockquote>
+<p><img src="/../images/image-20260916103915001.png" alt="image-20260916103915001"></p>
+<h3 id="3-5-ADB-Android-Emulator"><a href="#3-5-ADB-Android-Emulator" class="headerlink" title="3.5 ADB + Android Emulator"></a>3.5 ADB + Android Emulator</h3><p>为了验证静态分析结果，需要提供实际的 Android 运行环境。使用 Android Emulator 作为动态分析环境，并通过 ADB 与模拟器进行交互。主要用于：</p>
+<ul>
+<li>安装 APK</li>
+<li>启动应用</li>
+<li>获取 Logcat</li>
+<li>执行 Shell 命令</li>
+<li>获取进程信息</li>
+<li>配合 Frida 进行动态分析</li>
+</ul>
+<p><img src="/../images/image-20260916122135728.png" alt="image-20260916122135728"></p>
+<h3 id="3-6-Frida"><a href="#3-6-Frida" class="headerlink" title="3.6 Frida"></a>3.6 Frida</h3><p>Frida 用于对运行中的应用进行动态分析。当静态分析得到某个关键方法或调用链后，可以通过 Frida 对目标方法进行 Hook，观察其实际运行情况。主要观察：</p>
+<ul>
+<li>方法是否实际执行</li>
+<li>参数内容</li>
+<li>返回值</li>
+<li>调用次数</li>
+<li>调用时机</li>
+<li>Java &#x2F; Native 之间的运行关系</li>
+</ul>
+<p>通过动态结果对静态分析进行验证，从而减少仅依赖代码阅读造成的误判。</p>
+<p><img src="/../images/image-20260916141052468.png" alt="image-20260916141052468"></p>
+<h2 id="四-AI-辅助-Java-层逆向实战"><a href="#四-AI-辅助-Java-层逆向实战" class="headerlink" title="四. AI 辅助 Java 层逆向实战"></a>四. AI 辅助 Java 层逆向实战</h2><p>实战以 allsafe 靶场为例，allsafe 提供了全面且适合初学者的不同等级漏洞。适合作为本项目 agent 学习样本。</p>
+<h3 id="4-1-整体应用信息与安全风险评估"><a href="#4-1-整体应用信息与安全风险评估" class="headerlink" title="4.1 整体应用信息与安全风险评估"></a>4.1 整体应用信息与安全风险评估</h3><p>静态分析在 jadx 和 mobsf 中打开 allsafe.apk。</p>
+<p>claude prompt：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">我在jadx和mobsf中打开了allsafe.apk，现在我们要做安卓逆向的分析和靶场flag的寻找。首先，allsafe作为一个 apk，你先给出其关键的应用信息。其次，allsafe作为一个寻找flag的靶场，你先分析每道题的考点，再大致给出找到 flag的位置或方法。同时重点关注2-3个你认为最有价值的考点，说出其有价值的原因，后续重点分析。</span><br></pre></td></tr></table></figure>
+
+<p>回答：</p>
+<img src="../images/image-20260916144343154.png" alt="image-20260916144343154" style="zoom:33%;" />
+
+<p>为防止小型靶场需要算力可能没有说服力，我这里又使用同样的方法分析了某大型ai聊天软件的安卓客户端，可见该工具链思路在大型app中依然有使用价值。</p>
+<img src="../images/image-20260911104652039.png" alt="image-20260911104652039" style="zoom:33%;" />
+
+
+
+<h3 id="4-2-Java-层逆向实战（flag-查找）"><a href="#4-2-Java-层逆向实战（flag-查找）" class="headerlink" title="4.2 Java 层逆向实战（flag 查找）"></a>4.2 Java 层逆向实战（flag 查找）</h3><p>prompt：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">现在仅静态分析，分析应用。所有题目能找到flag的直接给出flag，并简述一两行原由。不能给出flag的告诉我得到flag的操作方法。</span><br></pre></td></tr></table></figure>
+
+<p>回答：</p>
+<img src="../images/image-20260916152245037.png" alt="image-20260916152245037" style="zoom:33%;" />
+
+
+
+<h3 id="4-3-人工验证"><a href="#4-3-人工验证" class="headerlink" title="4.3 人工验证"></a>4.3 人工验证</h3><p>这里我只验证了 PIN Bypass 关卡，输入 claude 给出的 PIN，弹出 <code>Access granted, good job!</code> 提示。</p>
+<p>可见使用此工具辅助逆向分析可大大提高分析效率。只需人工检验判断正确与否，若分析错误，一是可以自己冲头分析，二是可以重新训练 AI 找到正确的漏洞，比如引导 AI 先寻找调用链，再寻找逐步分析排查错误。</p>
+<p>同样，为防止概率问题，我同样打开jadx手动验证了某包的架构，可以发现该工具链对于大型app的处理正确的。</p>
+<p><img src="/../images/image-20260921161631464.png" alt="image-20260921161631464"></p>
+<p>（本来还想进行辅助 native 实战和动态分析测试的，但 claude 的安全检测非常严格。靶场或应用的合理测试也被分析安全风险了。导致我的账号被封禁了TT。但不论基于哪一个 AI 工具都是同样的思路，同时还可以接入 codex 负责代码编写比如 hook 脚本之类提高自动化浓度。）</p>
+<h2 id="五-总结"><a href="#五-总结" class="headerlink" title="五. 总结"></a>五. 总结</h2><p>本项目基于 Claude 和 MCP，将 JADX、MobSF、Ghidra、ADB、Frida 等 Android 逆向工具进行整合，构建了一套面向 Android 应用分析的 AI 辅助逆向工作流。</p>
+<p>相比传统需要在多个工具之间频繁切换的分析方式，该方案利用 Claude 的代码理解和任务拆解能力，将不同逆向工具串联起来，使分析者能够通过自然语言描述分析目标，并根据 AI 的分析结果不断推进后续工作。</p>
+<p>项目最终形成：</p>
+<blockquote>
+<p><strong>分析目标 → AI 分析 → MCP 工具调用 → 分析结果 → 人工验证 → 进一步分析</strong></p>
+</blockquote>
+<p>的工作模式，实现 Java 层、Native&#x2F;JNI 层以及动态运行时分析之间的协同。</p>
+<p>需要强调的是，AI 在该流程中主要承担<strong>代码检索、信息整理、调用关系分析和辅助推理</strong>等工作，并不能完全替代逆向人员。对于关键结论，仍然需要通过 JADX、Ghidra、Frida 以及实际运行结果进行验证。</p>
+<p>通过本项目，进一步探索了 <strong>AI Agent + MCP 在 Android 逆向分析中的实际应用方式</strong>，并为后续针对大型 AI 应用进行 Android 客户端分析和 LLM 调用链研究提供工具基础。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/09/21/%E5%9F%BA%E4%BA%8EClaude-%E5%A4%9A%E5%B7%A5%E5%85%B7MCP%E6%90%AD%E5%BB%BAAI%E8%BE%85%E5%8A%A9Android%E9%80%86%E5%90%91%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E9%93%BE/" data-id="cmuazwdl0000bh8gc3aheaha5" data-title="基于Claude+多工具MCP搭建AI辅助Android逆向分析工具链" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2025/12/08/allsafe-%E7%AC%AC%E4%BA%8C%E9%83%A8%E5%88%86%EF%BC%88%E5%AE%9E%E6%88%98%EF%BC%89/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">allsafe 第二部分（实战）</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/09/">September 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/12/">December 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/11/">November 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/10/">October 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/09/21/%E5%9F%BA%E4%BA%8EClaude-%E5%A4%9A%E5%B7%A5%E5%85%B7MCP%E6%90%AD%E5%BB%BAAI%E8%BE%85%E5%8A%A9Android%E9%80%86%E5%90%91%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E9%93%BE/">基于Claude+多工具MCP搭建AI辅助Android逆向分析工具链</a>
+          </li>
+        
+          <li>
+            <a href="/2025/12/08/allsafe-%E7%AC%AC%E4%BA%8C%E9%83%A8%E5%88%86%EF%BC%88%E5%AE%9E%E6%88%98%EF%BC%89/">allsafe 第二部分（实战）</a>
+          </li>
+        
+          <li>
+            <a href="/2025/12/03/allsafe-%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%EF%BC%88%E5%AE%9E%E6%88%98%EF%BC%89/">allsafe 第一部分（实战）</a>
+          </li>
+        
+          <li>
+            <a href="/2025/12/02/Android%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%AE%89%E5%85%A8%E6%BC%8F%E6%B4%9E/">Android广播机制与安全漏洞</a>
+          </li>
+        
+          <li>
+            <a href="/2025/11/25/WebView-%E6%A0%B8%E5%BF%83%E7%9F%A5%E8%AF%86%E4%BD%93%E7%B3%BB/">WebView 核心知识体系</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 jaewdoy<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
